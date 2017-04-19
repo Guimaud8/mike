@@ -19,21 +19,24 @@ $database = $resultatDatabase -> fetchAll(PDO::FETCH_ASSOC);
 		<title></title>
 	</head>
 	<body>
-		<div id="mike">
-			<form>
-				<fieldset>
-					<legend>Requete</legend>
-					<label>Bdd :</label>
-					<select id="databaseSelect">
-						<?php foreach($database as $valeur): ?>	
-							<option value="<?= $valeur['Database'] ?>"> <?= $valeur['Database'] ?> </option>
-						<?php endforeach; ?>
+		<form>
+			<fieldset>
+				<legend>Requete</legend>
+				<label>Bdd :</label>
+				<select id="databaseSelect">
+					<?php foreach($database as $valeur): ?>	
+						<option value="<?= $valeur['Database'] ?>"> <?= $valeur['Database'] ?> </option>
+					<?php endforeach; ?>
 
-					</select><br />
-					<textarea name="sql" id="sql" rows="4" cols="50">SELECT * FROM utilisateurs</textarea><br/>
-					<input type="submit" value="Envoyer" />
-				</fieldset>
-			</form>
+				</select><br />
+				<textarea name="sql" id="sql" rows="4" cols="50">SELECT * FROM utilisateurs</textarea><br/>
+				<input type="submit" value="Envoyer" />
+			</fieldset>
+		</form>
+		<div id="mike">
+		</div>
+		<div>
+			<p id="message"></p>
 		</div>
 		<script>
 		$(function(){
@@ -53,8 +56,18 @@ $database = $resultatDatabase -> fetchAll(PDO::FETCH_ASSOC);
 				});
 			 
 				request.done(function( msg ) {
-					$( "#mike" ).html( msg );
-					$( "#requet" ).html( myRequest );
+					msg = JSON.parse(msg); // Conversion Json en Object Javascript
+					if(msg.erreur == false){
+						$( "#mike" ).html( msg.message );
+						$( "#requet" ).html( myRequest );
+						$( "#message" ).text("Voici le résultat de votre requete");
+						$( "#message" ).css("background-color", "green");
+					
+					}
+					else{
+						$( "#message" ).text(msg.message);
+						$( "#message" ).css("background-color", "red");
+					}
 				});
 					 
 				request.fail(function( jqXHR, textStatus ) {
