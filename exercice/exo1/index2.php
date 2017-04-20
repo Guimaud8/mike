@@ -29,7 +29,7 @@
 
                 /* Request en Ajax pour récupérer les utilisateurs - Retour en Array JSON */
                 $.ajax({
-                    url: "http://jsonplaceholder.typicode.com/users",
+                    url: "http://jsonplaceholder.typicode.com/posts",
                     method: "GET",
                 })
 
@@ -41,13 +41,9 @@
                     /* First boucle : Recuperation les titre du tableau - En bouclant sur le premier element de notre reponse (mike[0]), il recuperer les key*/
                     $.each(mike[0], function(index, value) {
 
-                        if (index == "name" || index == "username" || index == "email" || index == "phone" || index == "company") { // Voir exercice
-
-                            table += "<th>";
-                            table += index; // Affiche la key -> index de notre object
-                            table += "</th>";
-
-                        }
+                        table += "<th>";
+                        table += index; // Affiche la key -> index de notre object
+                        table += "</th>";
 
                     });
 
@@ -79,23 +75,15 @@
 
                             *Une itération désigne l'action de répéter un processus. Le calcul itératif permet l'application à des équations récursives.
                         */
+                        var valueId = "1";
                         $.each(mike[i], function(index, value) {
-                            if (index == "name" || index == "username" || index == "email" || index == "phone" || index == "company") { // voir exercice
-
-                                if (index == "name") { // Si l'index est le nom, on rajout une balise <a>.
-                                    table += "<td><a href='#'>";
-                                    table += value;
-                                    table += "</a></td>";
-                                } else {
-                                    table += "<td>";
-                                    if (index == "company") { // Company est un Object
-                                        table += value.name;
-                                    } else {
-                                        table += value;
-                                    }
-                                    table += "</td>";
-                                }
+                            
+                            if( index == "id"){
+                                valueId = value;
                             }
+                            table += '<td><a href="' + valueId + '">';
+                            table += value;
+                            table += "</a></td>";  
                         });
                         table += "</tr>";
                     };
@@ -105,31 +93,26 @@
 
                         // Annulation de l'actualisation de la page'
                         e.preventDefault();
+                        var nameUser = $(this).attr('href');
 
-                        var nameUser = $(this).text();
+                        console.log(nameUser);
 
                         var request = $.ajax({
-                            url: "http://jsonplaceholder.typicode.com/users",
+                            url: 'http://jsonplaceholder.typicode.com/comments?postId=' + nameUser,
                             method: "GET",
-                        })
+                        });
                         request.done(function(mike) {
                             newTable = "";
                             for (var i = 0; i < mike.length; i++) {
                                 console.log()
-                                if (mike[i].name == nameUser) {
-                                    newTable = "<table border='1'><tr>";
+                                if (mike[i].postId == nameUser) {
+                                    newTable += "<table border='1'><tr>";
                                     $.each(mike[i], function(index, value) {
 
                                         newTable += "<td>";
-                                        if (index == "company") {
-                                            newTable += value.name;
-                                        } else if (index == "address") {
-                                            newTable += value.street + " " + value.suite + " " + value.city + " " + value.zipcode;
-                                        } else {
-                                            newTable += value;
-                                        }
+                                        newTable += value;
                                         newTable += "</td>";
-                                    })
+                                    });
 
                                     newTable += "</tr></table>";
                                 }
